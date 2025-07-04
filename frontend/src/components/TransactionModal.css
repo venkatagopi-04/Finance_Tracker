@@ -1,0 +1,56 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transaction-form input,
+.transaction-form select,
+.transaction-form textarea {
+  padding: 8px;
+  font-size: 14px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.submit-btn {
+  background-color: #1976d2;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+}
+
+.cancel-btn {
+  background-color: #eee;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+}

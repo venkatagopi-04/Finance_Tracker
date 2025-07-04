@@ -1,0 +1,43 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.add-btn, .upload-btn {
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.add-btn {
+  background-color: #1976d2;
+  color: white;
+}
+
+.upload-btn {
+  background-color: white;
+  color: #1976d2;
+  border: 2px solid #1976d2;
+}
+
+.dashboard-charts {
+  display: flex;
+  gap: 20px;
+}
+
+.chart-box {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}

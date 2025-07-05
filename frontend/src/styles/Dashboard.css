@@ -1,13 +1,18 @@
+
 .dashboard-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  background: var(--bg);
+  min-height: 100vh;
+  transition: background 0.2s;
 }
 
 .dashboard-actions {
   display: flex;
   gap: 15px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .add-btn, .upload-btn {
@@ -16,28 +21,48 @@
   border-radius: 8px;
   cursor: pointer;
   border: none;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
 }
 
 .add-btn {
-  background-color: #1976d2;
-  color: white;
+  background-color: var(--primary);
+  color: #fff;
 }
 
 .upload-btn {
-  background-color: white;
-  color: #1976d2;
-  border: 2px solid #1976d2;
+  background-color: var(--card);
+  color: var(--primary);
+  border: 2px solid var(--primary);
 }
 
 .dashboard-charts {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .chart-box {
-  flex: 1;
-  background: white;
+  flex: 1 1 320px;
+  background: rgba(255,255,255,0.55);
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12), 0 1.5px 6px 0 rgba(0,0,0,0.07);
+  min-width: 320px;
+  margin-bottom: 20px;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  backdrop-filter: blur(4px);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+
+/* Highlight cards/components */
+.summary-cards, .table-container {
+  background: rgba(255,255,255,0.65);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10), 0 1.5px 6px 0 rgba(0,0,0,0.06);
+  border: 1.5px solid rgba(255,255,255,0.32);
+  padding: 18px 20px;
+  margin-bottom: 18px;
+  backdrop-filter: blur(4px);
+  transition: box-shadow 0.2s, background 0.2s;
 }

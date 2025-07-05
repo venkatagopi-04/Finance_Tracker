@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+
 import './TransactionModal.css';
+import axios from '../utils/axios'; // instead of 'axios'
+
 
 const CATEGORY_OPTIONS = [
   'Recharge',
@@ -13,8 +15,8 @@ const CATEGORY_OPTIONS = [
   'Other'
 ];
 
-const TransactionModal = ({ isOpen, onClose }) => {
-  const [formData, setFormData] = useState({
+const TransactionModal = ({ isOpen, onClose, initialData, onSave }) => {
+  const [formData, setFormData] = useState(initialData || {
     type: 'expense',
     category: '',
     subcategory: '',
@@ -28,6 +30,16 @@ const TransactionModal = ({ isOpen, onClose }) => {
     status: 'confirmed',
   });
 
+  React.useEffect(() => {
+    if (initialData) {
+      setFormData({
+        ...initialData,
+        amount: Math.abs(initialData.amount),
+        tags: Array.isArray(initialData.tags) ? initialData.tags.join(', ') : (initialData.tags || ''),
+      });
+    }
+  }, [initialData]);
+
   if (!isOpen) return null;
 
   const handleChange = (e) => {
@@ -37,26 +49,38 @@ const TransactionModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let amount = parseFloat(formData.amount);
+    if (formData.type === 'expense') {
+      amount = -Math.abs(amount);
+    } else {
+      amount = Math.abs(amount);
+    }
     const payload = {
       ...formData,
-      amount: parseFloat(formData.amount),
-      tags: formData.tags.split(',').map(tag => tag.trim()),
+      amount,
+      tags: typeof formData.tags === 'string' ? formData.tags.split(',').map(tag => tag.trim()) : formData.tags,
     };
 
     try {
-      await axios.post('http://localhost:5000/transactions', payload);
-      alert('Transaction added successfully!');
+      if (onSave && initialData) {
+        await onSave({ ...initialData, ...payload });
+      } else {
+        await axios.post('/transactions', payload);
+        alert('Transaction added successfully!');
+        // Optionally: trigger a custom event to refresh dashboard
+        window.dispatchEvent(new Event('transactionAdded'));
+      }
       onClose(); // Close modal
     } catch (err) {
       console.error(err);
-      alert('Failed to add transaction.');
+      alert('Failed to save transaction.');
     }
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>Add Transaction</h2>
+        <h2>{initialData ? 'Edit Transaction' : 'Add Transaction'}</h2>
         <form onSubmit={handleSubmit} className="transaction-form">
           <select name="type" value={formData.type} onChange={handleChange}>
             <option value="expense">Expense</option>
@@ -133,7 +157,7 @@ const TransactionModal = ({ isOpen, onClose }) => {
           </select>
 
           <div className="modal-actions">
-            <button type="submit" className="submit-btn">Add</button>
+            <button type="submit" className="submit-btn">{initialData ? 'Save' : 'Add'}</button>
             <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
           </div>
         </form>

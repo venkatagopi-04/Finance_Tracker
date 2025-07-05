@@ -9,7 +9,7 @@
   background: white;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  box-shadow: 0 6px 32px 0 rgba(79,195,247,0.18), 0 2px 12px 0 rgba(0,196,159,0.13), 0 0.5px 2px 0 rgba(0,0,0,0.08);
   text-align: center;
 }
 
@@ -21,6 +21,15 @@
 .card p {
   font-size: 1.5rem;
   margin-top: 10px;
+}
+.card.income p {
+  color: #00C49F;
+}
+.card.expenses p {
+  color: #FF6384;
+}
+.card.balance p {
+  color: var(--text);
 }
 
 .card.income p {

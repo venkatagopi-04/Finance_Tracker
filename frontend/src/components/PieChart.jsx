@@ -1,16 +1,12 @@
 import React from 'react';
 import { PieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 
-const data = [
-  { name: 'Food', value: 900 },
-  { name: 'Travel', value: 700 },
-  { name: 'Shopping', value: 1100 },
-  { name: 'Other', value: 800 },
-];
+// data prop: [{ name: 'Food', value: 900 }, ...]
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#AA66CC'];
 
-const PieChartComponent = () => (
+
+const PieChartComponent = ({ data = [] }) => (
   <div>
     <h4>Expenses by Category</h4>
     <PieChart width={300} height={250}>

@@ -13,8 +13,11 @@
     "concurrently": "^9.2.0"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "mongoose": "^8.16.1"
+    "mongoose": "^8.16.1",
+    "pdf-parse": "^1.1.1",
+    "pdf-poppler": "^0.2.1"
   }
 }

@@ -1,23 +1,29 @@
 .table-container {
   margin-top: 20px;
-  background: white;
+  background: var(--card);
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  color: var(--text);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  background: var(--card);
+  color: var(--text);
 }
 
 th, td {
   padding: 10px;
   text-align: left;
   border-bottom: 1px solid #eee;
+  background: var(--card);
+  color: var(--text);
 }
 
 th {
-  background: #f4f4f4;
+  background: var(--table-header);
+  color: var(--text);
 }

@@ -12,18 +12,20 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--card);
+  color: var(--text);
   padding: 30px;
   border-radius: 12px;
-  width: 400px;
+  width: 500px;
+  max-width: 96vw;
   max-height: 90vh;
   overflow-y: auto;
 }
 
 .transaction-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
 }
 
 .transaction-form input,
@@ -31,9 +33,17 @@
 .transaction-form textarea {
   padding: 8px;
   font-size: 14px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid #d0d7de;
+}
+
+.transaction-form textarea {
+  grid-column: 1 / -1;
 }
 
 .modal-actions {
+  grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -41,8 +51,8 @@
 }
 
 .submit-btn {
-  background-color: #1976d2;
-  color: white;
+  background-color: var(--primary);
+  color: #fff;
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
@@ -50,7 +60,24 @@
 
 .cancel-btn {
   background-color: #eee;
+  color: var(--text);
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
+}
+
+@media (max-width: 600px) {
+  .modal-content {
+    width: 98vw;
+    padding: 12px;
+  }
+  .transaction-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
 }

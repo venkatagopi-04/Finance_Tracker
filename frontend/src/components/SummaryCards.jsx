@@ -1,12 +1,7 @@
 import React from 'react';
 import './SummaryCards.css';
 
-const SummaryCards = () => {
-  // Placeholder values; replace with props or API call later
-  const totalIncome = 7000;
-  const totalExpenses = 4500;
-  const balance = totalIncome - totalExpenses;
-
+const SummaryCards = ({ totalIncome, totalExpenses, balance }) => {
   return (
     <div className="summary-cards">
       <div className="card income">

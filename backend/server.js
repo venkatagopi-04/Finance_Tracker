@@ -4,13 +4,18 @@ require('dotenv').config(); // Load .env before anything else
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const cookieParser = require('./middleware/cookieParser');
 
 const app = express();
 const PORT = 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
+app.use(cookieParser());
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
@@ -29,6 +34,11 @@ app.get('/', (req, res) => {
 const transactionRoutes = require('./routes/transactionRoutes');
 app.use('/transactions', transactionRoutes);
 
+const authRoutes = require('./routes/authRoutes');
+app.use('/auth', authRoutes);
+
+const receiptUploadRoutes = require('./routes/receiptUploadRoutes');
+app.use('/receipt', receiptUploadRoutes);
 
 // Start Server
 app.listen(PORT, () => {

@@ -1,15 +1,10 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
-const data = [
-  { month: 'Jan', amount: 600 },
-  { month: 'Feb', amount: 900 },
-  { month: 'Mar', amount: 700 },
-  { month: 'Apr', amount: 1100 },
-  { month: 'May', amount: 1600 },
-];
+// data prop: [{ month: 'Jan', amount: 600 }, ...]
 
-const LineChartComponent = () => (
+
+const LineChartComponent = ({ data = [] }) => (
   <div>
     <h4>Expenses Over Time</h4>
     <LineChart width={300} height={250} data={data}>

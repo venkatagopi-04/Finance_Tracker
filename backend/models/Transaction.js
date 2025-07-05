@@ -23,7 +23,7 @@ const transactionSchema = new mongoose.Schema({
   amount: {
     type: Number,
     required: true,
-    min: 0,
+    // min: 0, // Allow negative for expenses
   },
   currency: {
     type: String,

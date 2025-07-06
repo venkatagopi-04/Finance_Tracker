@@ -29,8 +29,10 @@ Overall stats:
 
 Answer the user's question in a concise, friendly way, follow INR. If you use any numbers, base them only on the summary provided. If you can't answer, say so.`;
   try {
+    // Use Gemini API key from environment variable
+    const geminiApiKey = process.env.GEMINI_API_KEY;
     const geminiRes = await axios.post(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyDUKvKn5sighw0kbadaRCN7__fubxBb1Tw',
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`,
       { contents: [{ parts: [{ text: prompt }] }] }
     );
     const geminiText = geminiRes.data.candidates?.[0]?.content?.parts?.[0]?.text || '';

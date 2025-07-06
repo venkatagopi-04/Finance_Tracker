@@ -103,8 +103,10 @@ router.post('/receipt-upload', verifyToken, upload.single('receipt'), async (req
       const prompt = `Extract all financial transactions from this receipt page text. If there are multiple bills or transactions, return an array of JSON objects, each matching this schema: { type: "income" | "expense", category: "string", subcategory: "string (optional)", amount: number (no currency symbol), currency: "string", date: "ISO format string", description: "short transaction note", paymentMethod: "cash" | "card" | "upi" | "bank_transfer" | "other", tags: ["string"], source: "receipt", status: "confirmed", metadata: { extractedFromOCR: true, ocrRawText: "<raw extracted text>", confidenceScore: number between 0 and 1 } }. If there is only one transaction, return an array with a single object. If no transaction is found, return an empty array []. Do not return explanations or markdown, only the JSON array.\n\nReceipt page text: ${pageText}`;
       let geminiRes;
       try {
+        // Use Gemini API key from environment variable
+        const geminiApiKey = process.env.GEMINI_API_KEY;
         geminiRes = await axios.post(
-          'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyDUKvKn5sighw0kbadaRCN7__fubxBb1Tw',
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`,
           { contents: [{ parts: [{ text: prompt }] }] }
         );
       } catch (apiErr) {
@@ -148,8 +150,9 @@ router.post('/receipt-upload', verifyToken, upload.single('receipt'), async (req
       if (transactions.length === 0) {
         const singlePrompt = `Extract a single financial transaction from this receipt page text. Return a JSON object matching this schema: { type: "income" | "expense", category: "string", subcategory: "string (optional)", amount: number (no currency symbol), currency: "string", date: "ISO format string", description: "short transaction note", paymentMethod: "cash" | "card" | "upi" | "bank_transfer" | "other", tags: ["string"], source: "receipt", status: "confirmed", metadata: { extractedFromOCR: true, ocrRawText: "<raw extracted text>", confidenceScore: number between 0 and 1 } }. If no transaction is found, return {}. Do not return explanations or markdown, only the JSON object.\n\nReceipt page text: ${pageText}`;
         try {
+          const geminiApiKey = process.env.GEMINI_API_KEY;
           const singleRes = await axios.post(
-            'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyDUKvKn5sighw0kbadaRCN7__fubxBb1Tw',
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`,
             { contents: [{ parts: [{ text: singlePrompt }] }] }
           );
           const singleText = singleRes.data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';

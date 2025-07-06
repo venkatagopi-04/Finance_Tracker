@@ -27,7 +27,7 @@ Overall stats:
 - Total Expenses: ${summary.totalExpenses}
 - Balance: ${summary.balance}
 
-Answer the user's question in a concise, friendly way. If you use any numbers, base them only on the summary provided. If you can't answer, say so.`;
+Answer the user's question in a concise, friendly way, follow INR. If you use any numbers, base them only on the summary provided. If you can't answer, say so.`;
   try {
     const geminiRes = await axios.post(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyDUKvKn5sighw0kbadaRCN7__fubxBb1Tw',

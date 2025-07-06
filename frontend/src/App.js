@@ -102,8 +102,8 @@ function App() {
           {/* Fallback route for unknown paths */}
           <Route path="*" element={<Navigate to="/auth" replace />} />
         </Routes>
-        {/* Floating ChatBot assistant */}
-        <ChatBot summary={summary} />
+        {/* Floating ChatBot assistant - only show if not on /auth */}
+        {window.location.pathname !== '/auth' && <ChatBot summary={summary} />}
       </LayoutWithSidebar>
     </Router>
   );

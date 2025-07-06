@@ -1,0 +1,113 @@
+/* AuthPage.css - Beautiful finance-themed login/register page */
+
+.auth-bg {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f2027 0%, #2c5364 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+
+.auth-card {
+  background: rgba(255,255,255,0.97);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  padding: 40px 32px 32px 32px;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.8s cubic-bezier(.4,0,.2,1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-card h2 {
+  text-align: center;
+  color: #1976d2;
+  margin-bottom: 24px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.auth-form input {
+  padding: 12px 14px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f7fafc;
+  transition: border 0.2s;
+}
+.auth-form input:focus {
+  border: 1.5px solid #1976d2;
+  outline: none;
+  background: #fff;
+}
+
+.auth-form button[type="submit"] {
+  background: linear-gradient(90deg, #1976d2 60%, #43cea2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.auth-form button[type="submit"]:hover {
+  background: linear-gradient(90deg, #155fa0 60%, #2bc4ad 100%);
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.13);
+}
+
+.auth-toggle {
+  margin-top: 18px;
+  text-align: center;
+  color: #444;
+  font-size: 0.98rem;
+}
+.auth-toggle button {
+  margin-left: 8px;
+  background: none;
+  border: none;
+  color: #1976d2;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+.auth-toggle button:hover {
+  color: #155fa0;
+}
+
+/* Finance icon or accent */
+.auth-card::before {
+  content: '\20B9'; /* Rupee symbol as accent */
+  position: absolute;
+  top: -32px;
+  right: 24px;
+  font-size: 4.5rem;
+  color: #1976d2;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 600px) {
+  .auth-card {
+    padding: 24px 8px 24px 8px;
+    max-width: 98vw;
+  }
+}

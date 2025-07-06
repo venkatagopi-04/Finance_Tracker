@@ -6,7 +6,7 @@ Built with the **MERN stack (MongoDB, Express, React, Node.js)**.
 
 # Demo
 
-## [Video Link https://youtu.be/PjFFJe6Ve4c](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
+## [Video Link https://youtu.be/PjFFJe6Ve4c](https://youtu.be/PjFFJe6Ve4c)
 
 ---
 

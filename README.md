@@ -4,6 +4,10 @@ A full-stack **Personal Finance Assistant** application to help users track, man
 
 Built with the **MERN stack (MongoDB, Express, React, Node.js)**.
 
+# Demo
+
+## [Video Link https://youtu.be/PjFFJe6Ve4c](https://www.youtube.com/watch?v=YOUR_VIDEO_ID)
+
 ---
 
 ## Features

@@ -3,17 +3,38 @@ import React, { useState } from 'react';
 import './TransactionModal.css';
 import axios from '../utils/axios'; // instead of 'axios'
 
-
-const CATEGORY_OPTIONS = [
+const INCOME_CATEGORIES = [
+  'Salary',
+  'Business',
+  'Interest',
+  'Money Received',
+  'Other Income'
+];
+const EXPENSE_CATEGORIES = [
   'Recharge',
   'Bills',
   'Money Sent',
-  'Money Received',
   'Shopping',
   'Dining',
   'Travel',
-  'Other'
+  'Other Expense'
 ];
+const CURRENCY_OPTIONS = [
+  { value: 'INR', label: 'INR (₹)' },
+  { value: 'USD', label: 'USD ($)' },
+  { value: 'EUR', label: 'EUR (€)' },
+  { value: 'FRW', label: 'FRW (FRw)' },
+  { value: 'GBP', label: 'GBP (£)' },
+  { value: 'OTHER', label: 'Other' },
+];
+const CURRENCY_RATES = {
+  INR: 1,
+  USD: 83, // 1 USD = 83 INR
+  EUR: 90, // 1 EUR = 90 INR
+  FRW: 0.021, // 1 FRW = 0.021 INR
+  GBP: 105, // 1 GBP = 105 INR
+  OTHER: 1, // fallback
+};
 
 const TransactionModal = ({ isOpen, onClose, initialData, onSave }) => {
   const [formData, setFormData] = useState(initialData || {
@@ -50,14 +71,22 @@ const TransactionModal = ({ isOpen, onClose, initialData, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let amount = parseFloat(formData.amount);
+    let currency = formData.currency || 'INR';
+    // Convert to INR for storage
+    const rate = CURRENCY_RATES[currency] || 1;
+    let amountINR = amount;
+    if (currency !== 'INR') {
+      amountINR = amount * rate;
+    }
     if (formData.type === 'expense') {
-      amount = -Math.abs(amount);
+      amountINR = -Math.abs(amountINR);
     } else {
-      amount = Math.abs(amount);
+      amountINR = Math.abs(amountINR);
     }
     const payload = {
       ...formData,
-      amount,
+      amount: amountINR,
+      currency: 'INR', // Always store as INR
       tags: typeof formData.tags === 'string' ? formData.tags.split(',').map(tag => tag.trim()) : formData.tags,
     };
 
@@ -66,103 +95,106 @@ const TransactionModal = ({ isOpen, onClose, initialData, onSave }) => {
         await onSave({ ...initialData, ...payload });
       } else {
         await axios.post('/transactions', payload);
-        alert('Transaction added successfully!');
-        // Optionally: trigger a custom event to refresh dashboard
+        if (window.showToast) window.showToast('Transaction added successfully!', 'success');
         window.dispatchEvent(new Event('transactionAdded'));
       }
       onClose(); // Close modal
     } catch (err) {
       console.error(err);
-      alert('Failed to save transaction.');
+      if (window.showToast) window.showToast('Failed to save transaction.', 'error');
     }
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h2>{initialData ? 'Edit Transaction' : 'Add Transaction'}</h2>
-        <form onSubmit={handleSubmit} className="transaction-form">
-          <select name="type" value={formData.type} onChange={handleChange}>
-            <option value="expense">Expense</option>
-            <option value="income">Income</option>
-          </select>
+    <>
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <h2>{initialData ? 'Edit Transaction' : 'Add Transaction'}</h2>
+          <form onSubmit={handleSubmit} className="transaction-form">
+            <select name="type" value={formData.type} onChange={handleChange}>
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
 
-          <select name="category" value={formData.category} onChange={handleChange} required>
-            <option value="">Select Category</option>
-            {CATEGORY_OPTIONS.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+            <select name="category" value={formData.category} onChange={handleChange} required>
+              <option value="">Select Category</option>
+              {(formData.type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES).map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
 
-          <input
-            type="text"
-            name="subcategory"
-            placeholder="Subcategory (optional)"
-            value={formData.subcategory}
-            onChange={handleChange}
-          />
+            <input
+              type="text"
+              name="subcategory"
+              placeholder="Subcategory (optional)"
+              value={formData.subcategory}
+              onChange={handleChange}
+            />
 
-          <input
-            type="number"
-            name="amount"
-            placeholder="Amount"
-            value={formData.amount}
-            onChange={handleChange}
-            required
-          />
+            <input
+              type="number"
+              name="amount"
+              placeholder="Amount"
+              value={formData.amount}
+              onChange={handleChange}
+              required
+            />
+            <select
+              name="currency"
+              value={formData.currency}
+              onChange={handleChange}
+              style={{ marginBottom: 10 }}
+            >
+              {CURRENCY_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
 
-          <input
-            type="text"
-            name="currency"
-            placeholder="Currency"
-            value={formData.currency}
-            onChange={handleChange}
-          />
+            <input
+              type="date"
+              name="date"
+              value={formData.date}
+              onChange={handleChange}
+              required
+            />
 
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-            required
-          />
+            <textarea
+              name="description"
+              placeholder="Description"
+              value={formData.description}
+              onChange={handleChange}
+            ></textarea>
 
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleChange}
-          ></textarea>
+            <select name="paymentMethod" value={formData.paymentMethod} onChange={handleChange}>
+              <option value="cash">Cash</option>
+              <option value="card">Card</option>
+              <option value="upi">UPI</option>
+              <option value="bank_transfer">Bank Transfer</option>
+              <option value="other">Other</option>
+            </select>
 
-          <select name="paymentMethod" value={formData.paymentMethod} onChange={handleChange}>
-            <option value="cash">Cash</option>
-            <option value="card">Card</option>
-            <option value="upi">UPI</option>
-            <option value="bank_transfer">Bank Transfer</option>
-            <option value="other">Other</option>
-          </select>
+            <input
+              type="text"
+              name="tags"
+              placeholder="Tags (comma-separated)"
+              value={formData.tags}
+              onChange={handleChange}
+            />
 
-          <input
-            type="text"
-            name="tags"
-            placeholder="Tags (comma-separated)"
-            value={formData.tags}
-            onChange={handleChange}
-          />
+            <select name="status" value={formData.status} onChange={handleChange}>
+              <option value="confirmed">Confirmed</option>
+              <option value="pending">Pending</option>
+              <option value="flagged">Flagged</option>
+            </select>
 
-          <select name="status" value={formData.status} onChange={handleChange}>
-            <option value="confirmed">Confirmed</option>
-            <option value="pending">Pending</option>
-            <option value="flagged">Flagged</option>
-          </select>
-
-          <div className="modal-actions">
-            <button type="submit" className="submit-btn">{initialData ? 'Save' : 'Add'}</button>
-            <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
-          </div>
-        </form>
+            <div className="modal-actions">
+              <button type="submit" className="submit-btn">{initialData ? 'Save' : 'Add'}</button>
+              <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

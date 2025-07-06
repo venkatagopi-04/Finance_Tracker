@@ -40,6 +40,12 @@ app.use('/auth', authRoutes);
 const receiptUploadRoutes = require('./routes/receiptUploadRoutes');
 app.use('/receipt', receiptUploadRoutes);
 
+const chatRoutes = require('./routes/chatRoutes');
+app.use('/chat', chatRoutes);
+
+const userRoutes = require('./routes/userRoutes');
+app.use('/user', userRoutes);
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import SummaryCards from '../components/SummaryCards';
 import PieChartComponent from '../components/PieChart';
 import LineChartComponent from '../components/LineChart';
@@ -9,11 +9,14 @@ import axios from '../utils/axios';
 import '../styles/Dashboard.css';
 
 
-const Dashboard = () => {
+const Dashboard = ({ setSummary }) => {
   const [showModal, setShowModal] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Currency state and conversion rates
+  const [currency, setCurrency] = useState('INR');
+  const [conversionRates] = useState({ USD: 83, FRW: 0.021, OTHER: 1 }); // Example rates
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -34,10 +37,55 @@ const Dashboard = () => {
     return () => window.removeEventListener('transactionAdded', handler);
   }, []);
 
-  // Calculate summary data
-  const totalIncome = transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
-  const totalExpenses = transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
-  const balance = totalIncome - totalExpenses;
+  // Calculate summary data in INR
+  const totalIncomeINR = transactions.filter(t => t.amount > 0).reduce((sum, t) => {
+    let amt = t.amount;
+    if (t.currency && t.currency !== 'INR' && conversionRates[t.currency]) {
+      amt = t.amount * conversionRates[t.currency];
+    }
+    return sum + amt;
+  }, 0);
+  const totalExpensesINR = transactions.filter(t => t.amount < 0).reduce((sum, t) => {
+    let amt = Math.abs(t.amount);
+    if (t.currency && t.currency !== 'INR' && conversionRates[t.currency]) {
+      amt = Math.abs(t.amount) * conversionRates[t.currency];
+    }
+    return sum + amt;
+  }, 0);
+  const balanceINR = totalIncomeINR - totalExpensesINR;
+
+  // Convert INR summary to selected currency for display
+  const displayRate = currency === 'INR' ? 1 : (1 / (conversionRates[currency] || 1));
+  const totalIncome = Math.round(totalIncomeINR * displayRate);
+  const totalExpenses = Math.round(totalExpensesINR * displayRate);
+  const balance = Math.round(balanceINR * displayRate);
+
+  // Memoize category breakdowns to avoid unnecessary updates
+  const expensesByCategory = useMemo(() =>
+    transactions.filter(t => t.amount < 0).reduce((acc, t) => {
+      acc[t.category] = (acc[t.category] || 0) + Math.abs(t.amount);
+      return acc;
+    }, {}), [transactions]
+  );
+  const incomeByCategory = useMemo(() =>
+    transactions.filter(t => t.amount > 0).reduce((acc, t) => {
+      acc[t.category] = (acc[t.category] || 0) + t.amount;
+      return acc;
+    }, {}), [transactions]
+  );
+
+  // Update global summary for ChatBot (always in INR)
+  useEffect(() => {
+    if (setSummary) {
+      setSummary({
+        totalIncome: totalIncomeINR,
+        totalExpenses: totalExpensesINR,
+        balance: balanceINR,
+        expensesByCategory,
+        incomeByCategory
+      });
+    }
+  }, [setSummary, totalIncomeINR, totalExpensesINR, balanceINR, expensesByCategory, incomeByCategory]);
 
   // Pie chart data: group by category (expenses only)
   const pieData = Object.values(
@@ -90,10 +138,16 @@ const Dashboard = () => {
     >
       <div style={{width: '100%', maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateRows: 'auto auto 1fr auto', gap: 32}}>
         <div style={{marginBottom: 8}}>
-          <SummaryCards totalIncome={totalIncome} totalExpenses={totalExpenses} balance={balance} />
+          <SummaryCards
+            totalIncome={totalIncome}
+            totalExpenses={totalExpenses}
+            balance={balance}
+            currency={currency}
+            onCurrencyChange={setCurrency}
+          />
         </div>
 
-        <div className="dashboard-actions" style={{display: 'flex', gap: 16, justifyContent: 'flex-end', alignItems: 'center', margin: '0 0 8px 0', width: '100%'}}>
+        <div className="dashboard-actions" style={{display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'center', margin: '0 0 8px 0', width: '100%'}}>
           <button className="add-btn" onClick={() => setShowModal(true)} style={{
             background: isDark ? 'var(--dashboard-card)' : '#f8b500',
             color: isDark ? '#ffe082' : '#222',
@@ -110,10 +164,10 @@ const Dashboard = () => {
         </div>
 
         <div className="dashboard-charts" style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, width: '100%', marginBottom: 0}}>
-          <div className="chart-box" style={{background: 'var(--dashboard-card)', borderRadius: 16, boxShadow: 'var(--dashboard-shadow)', padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 320}}>
+          <div className="chart-box" style={{background: 'var(--dashboard-card)', borderRadius: 16, boxShadow: 'var(--dashboard-shadow)', padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 300}}>
             <PieChartComponent data={pieData} />
           </div>
-          <div className="chart-box" style={{background: 'var(--dashboard-card)', borderRadius: 16, boxShadow: 'var(--dashboard-shadow)', padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 320}}>
+          <div className="chart-box" style={{background: 'var(--dashboard-card)', borderRadius: 16, boxShadow: 'var(--dashboard-shadow)', padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 300}}>
             <LineChartComponent data={lineData} />
           </div>
         </div>

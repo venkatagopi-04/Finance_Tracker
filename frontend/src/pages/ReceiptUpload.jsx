@@ -1,11 +1,34 @@
 import React, { useState } from 'react';
 import axios from '../utils/axios';
+import ReceiptTransactionsTable from '../components/ReceiptTransactionsTable';
+import './ReceiptUpload.css';
 
 const ReceiptUpload = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [receiptTransactions, setReceiptTransactions] = useState([]);
+
+  // Fetch all previous receipt-uploaded transactions on mount
+  React.useEffect(() => {
+    const fetchReceiptTransactions = async () => {
+      try {
+        const res = await axios.get('/transactions');
+        // Only show transactions with source === 'receipt'
+        let txns = Array.isArray(res.data) ? res.data : [res.data];
+        txns = txns.filter(tx => tx && tx.source === 'receipt');
+        setReceiptTransactions(txns);
+      } catch (err) {
+        // Optionally handle error
+      }
+    };
+    fetchReceiptTransactions();
+    // Listen for transactionAdded event to refresh list
+    const handler = () => fetchReceiptTransactions();
+    window.addEventListener('transactionAdded', handler);
+    return () => window.removeEventListener('transactionAdded', handler);
+  }, []);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -31,9 +54,9 @@ const ReceiptUpload = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setResult(res.data);
-      console.log('Upload success:', res.data);
-      // Dispatch event for dashboard refresh
+      // After upload, trigger refresh via event
       window.dispatchEvent(new Event('transactionAdded'));
+      console.log('Upload success:', res.data);
     } catch (err) {
       setError(err.response?.data?.message || 'Upload failed');
       console.error('Upload failed:', err.response?.data || err);
@@ -44,18 +67,18 @@ const ReceiptUpload = () => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '2rem auto', padding: 24, background: 'var(--card-bg)', borderRadius: 8 }}>
+    <div className="receipt-upload-container">
       <h2>Upload Receipt</h2>
-      <form onSubmit={handleUpload}>
+      <form className="receipt-upload-form" onSubmit={handleUpload}>
         <input type="file" accept="image/*,application/pdf" onChange={handleFileChange} />
-        <button type="submit" disabled={loading || !file} style={{ marginTop: 12 }}>
+        <button type="submit" disabled={loading || !file}>
           {loading ? 'Uploading...' : 'Upload'}
         </button>
       </form>
-      {result && (
-        <pre style={{ marginTop: 16, background: '#222', color: '#fff', padding: 12, borderRadius: 4, overflowX: 'auto' }}>{JSON.stringify(result, null, 2)}</pre>
+      {error && <div className="receipt-upload-error">{error}</div>}
+      {receiptTransactions.length > 0 && (
+        <ReceiptTransactionsTable transactions={receiptTransactions} />
       )}
-      {error && <div style={{ color: 'red', marginTop: 12 }}>{error}</div>}
     </div>
   );
 };

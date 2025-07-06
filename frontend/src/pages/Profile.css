@@ -1,0 +1,39 @@
+.profile-page {
+  max-width: 500px;
+  margin: 40px auto;
+  background: var(--dashboard-card, #fff);
+  border-radius: 16px;
+  box-shadow: var(--dashboard-shadow, 0 2px 16px 0 rgba(0,0,0,0.07));
+  padding: 32px 28px;
+  color: var(--dashboard-text, #222);
+}
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+}
+.profile-actions {
+  display: flex;
+  gap: 16px;
+}
+.profile-btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #f8b500;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.profile-btn:hover {
+  background: #d49a00;
+}

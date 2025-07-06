@@ -17,29 +17,81 @@
 .receipt-modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.35);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .receipt-modal {
-  background: var(--card-bg, #222);
-  color: var(--text, #fff);
-  padding: 2rem 1.5rem 1.5rem 1.5rem;
-  border-radius: 10px;
-  min-width: 320px;
+  background: var(--card-bg, #fff);
+  border-radius: 14px;
+  box-shadow: 0 4px 32px 0 rgba(79,195,247,0.13), 0 1.5px 8px 0 rgba(0,196,159,0.09), 0 0.5px 2px 0 rgba(0,0,0,0.06);
+  padding: 32px 28px 28px 28px;
+  min-width: 340px;
   max-width: 95vw;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.receipt-modal h2 {
+  margin-bottom: 18px;
+  color: #00b894;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.receipt-modal form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.receipt-modal input[type="file"] {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 7px;
+  padding: 7px 10px;
+  background: #fafafa;
+  font-size: 1rem;
+  color: #333;
+  width: 100%;
+}
+.receipt-modal button[type="submit"] {
+  background: #00b894;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 10px 28px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+.receipt-modal button[type="submit"]:disabled {
+  background: #b2bec3;
+  cursor: not-allowed;
 }
 .receipt-modal-close {
   position: absolute;
-  top: 8px;
-  right: 12px;
+  top: 12px;
+  right: 16px;
   background: none;
   border: none;
-  color: #fff;
   font-size: 2rem;
+  color: #888;
   cursor: pointer;
+  z-index: 2;
+}
+.upload-status {
+  margin-top: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.upload-status.success {
+  color: #00b894;
+}
+.upload-status.error {
+  color: #d63031;
 }

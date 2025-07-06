@@ -9,7 +9,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#AA66CC'];
 const PieChartComponent = ({ data = [] }) => (
   <div>
     <h4>Expenses by Category</h4>
-    <PieChart width={300} height={250}>
+    <PieChart width={300} height={300}>
       <Pie
         data={data}
         cx="50%"

@@ -1,0 +1,54 @@
+.receipt-upload-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 32px 28px 28px 28px;
+  background: var(--card-bg, #fff);
+  border-radius: 14px;
+  box-shadow: 0 4px 32px 0 rgba(79,195,247,0.13), 0 1.5px 8px 0 rgba(0,196,159,0.09), 0 0.5px 2px 0 rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.receipt-upload-container h2 {
+  margin-bottom: 18px;
+  color: #00b894;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.receipt-upload-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.receipt-upload-form input[type="file"] {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 7px;
+  padding: 7px 10px;
+  background: #fafafa;
+  font-size: 1rem;
+  color: #333;
+  width: 100%;
+}
+.receipt-upload-form button {
+  background: #00b894;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 10px 28px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+.receipt-upload-form button:disabled {
+  background: #b2bec3;
+  cursor: not-allowed;
+}
+.receipt-upload-error {
+  color: #d63031;
+  margin-top: 12px;
+  font-weight: 500;
+}

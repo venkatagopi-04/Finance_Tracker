@@ -32,6 +32,7 @@ const AuthPage = () => {
   return (
     <div className="auth-bg">
       <div className="auth-card">
+      <h2>Personal Finance Assistant</h2>
         <h2>{isLogin ? 'Login' : 'Register'}</h2>
         <form onSubmit={handleSubmit} className="auth-form">
           {!isLogin && (

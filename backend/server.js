@@ -23,8 +23,8 @@ mongoose.connect(process.env.MONGO_URI, {
   useUnifiedTopology: true,
 });
 const db = mongoose.connection;
-db.once('open', () => console.log('✅ MongoDB connected'));
-db.on('error', (err) => console.error('❌ MongoDB error:', err));
+db.once('open', () => console.log('MongoDB connected'));
+db.on('error', (err) => console.error('MongoDB error:', err));
 
 // Simple Test Route
 app.get('/', (req, res) => {
@@ -48,5 +48,5 @@ app.use('/user', userRoutes);
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });

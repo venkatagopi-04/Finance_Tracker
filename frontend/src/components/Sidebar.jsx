@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaPlus, FaHistory, FaChartPie, FaFileUpload, FaCog, FaUser } from 'react-icons/fa';
 import { FaSignOutAlt } from 'react-icons/fa';
-import '../styles/SidebarResponsive.css';
+
 
 const Sidebar = () => {
   // State for dark mode and sidebar open/close
@@ -39,7 +39,7 @@ const Sidebar = () => {
       {/* Overlay for closing sidebar on mobile */}
       {open && <div className="sidebar-overlay" onClick={handleOverlayClick}></div>}
       <div className={`sidebar${open ? ' open' : ''}`} style={{ ...styles.sidebar, background: 'var(--sidebar-bg)', color: 'var(--sidebar-text)' }}>
-        <h2 style={styles.title}>Finance App</h2>
+        <h2 style={styles.title}> Personal Finance Assistant</h2>
         <nav style={styles.nav}>
           {/* Navigation links */}
           <Link to="/dashboard" style={styles.link} onClick={() => setOpen(false)}><FaPlus />Dashboard</Link>

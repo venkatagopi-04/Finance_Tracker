@@ -1,3 +1,6 @@
+// TransactionHistory.jsx - Page for viewing, filtering, editing, and deleting all transactions
+// Provides advanced filters, pagination, and edit/delete actions for each transaction
+
 import React, { useEffect, useState } from 'react';
 import './TransactionHistory.css';
 import axios from '../utils/axios';
@@ -5,6 +8,7 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 import TransactionModal from '../components/TransactionModal';
 
 const TransactionHistory = () => {
+  // State for all transactions, filtered list, pagination, filters, and edit modal
   const [transactions, setTransactions] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [page, setPage] = useState(1);
@@ -19,12 +23,14 @@ const TransactionHistory = () => {
   });
   const [editTxn, setEditTxn] = useState(null);
 
+  // Fetch all transactions on mount
   useEffect(() => {
     axios.get('/transactions')
       .then(res => setTransactions(res.data))
       .catch(err => console.error('Error fetching transactions:', err));
   }, []);
 
+  // Apply filters whenever transactions or filters change
   useEffect(() => {
     let data = [...transactions];
     if (filters.from) {
@@ -54,15 +60,18 @@ const TransactionHistory = () => {
   const statuses = Array.from(new Set(transactions.map(t => t.status))).filter(Boolean);
   const paymentMethods = Array.from(new Set(transactions.map(t => t.paymentMethod))).filter(Boolean);
 
+  // Handle filter changes
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(f => ({ ...f, [name]: value }));
   };
 
+  // Reset filters to default values
   const handleReset = () => {
     setFilters({ from: '', to: '', type: '', category: '', status: '', paymentMethod: '' });
   };
 
+  // Delete a transaction by ID
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this transaction?')) return;
     try {
@@ -73,8 +82,11 @@ const TransactionHistory = () => {
     }
   };
 
+  // Open edit modal with transaction data
   const handleEdit = (txn) => setEditTxn(txn);
+  // Close edit modal
   const handleEditClose = () => setEditTxn(null);
+  // Save edited transaction
   const handleEditSave = async (updated) => {
     try {
       await axios.put(`/transactions/${updated._id}`, updated);

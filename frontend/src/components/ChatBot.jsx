@@ -1,9 +1,13 @@
+// ChatBot.jsx - Floating chat bot assistant for finance questions
+// Sends user queries to backend and displays responses in a chat UI
+
 import React, { useState, useRef } from 'react';
 import { FaComments, FaTimes, FaPaperPlane } from 'react-icons/fa';
 import './ChatBot.css';
 import axios from '../utils/axios';
 
 const ChatBot = ({ summary }) => {
+  // State for chat open/close, messages, input, and loading
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
     { from: 'bot', text: 'Hi! Ask me anything about your finances.' }
@@ -12,6 +16,7 @@ const ChatBot = ({ summary }) => {
   const [loading, setLoading] = useState(false);
   const inputRef = useRef();
 
+  // Handle sending a message to the backend
   const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
@@ -37,12 +42,14 @@ const ChatBot = ({ summary }) => {
 
   return (
     <>
+      {/* Floating action button to open/close chat */}
       <button className="chatbot-fab" onClick={() => setOpen(o => !o)} aria-label="Open chat">
         {open ? <FaTimes size={22} /> : <FaComments size={28} />}
       </button>
       {open && (
         <div className="chatbot-popup">
           <div className="chatbot-header">Finance Assistant</div>
+          {/* Chat messages */}
           <div className="chatbot-messages">
             {messages.map((msg, i) => (
               <div key={i} className={`chatbot-msg chatbot-msg-${msg.from}`}>{msg.text}</div>
@@ -54,6 +61,7 @@ const ChatBot = ({ summary }) => {
             )}
             <div ref={inputRef} />
           </div>
+          {/* Input form for user message */}
           <form className="chatbot-input-row" onSubmit={handleSend}>
             <input
               type="text"

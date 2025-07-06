@@ -1,3 +1,6 @@
+// TransactionsTable.jsx - Table for displaying a list of recent transactions
+// Used in dashboard and other pages for a quick overview
+
 import React from 'react';
 import './TransactionsTable.css';
 
@@ -5,6 +8,7 @@ const TransactionsTable = ({ transactions = [], loading, error }) => {
   return (
     <div className="table-container">
       <h4>Recent Transactions</h4>
+      {/* Show loading, error, or the transactions table */}
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -20,6 +24,7 @@ const TransactionsTable = ({ transactions = [], loading, error }) => {
             </tr>
           </thead>
           <tbody>
+            {/* Render each transaction row */}
             {transactions.map((txn, index) => (
               <tr key={index}>
                 <td>{new Date(txn.date).toLocaleDateString()}</td>

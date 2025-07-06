@@ -1,8 +1,12 @@
+// ReceiptUploadButton.jsx - Button and modal for uploading receipt images or PDFs
+// Handles file selection, upload, and displays result or error
+
 import React, { useRef, useState } from 'react';
 import axios from '../utils/axios';
 import './ReceiptUploadButton.css';
 
 const ReceiptUploadButton = () => {
+  // State for modal open/close, file, loading, result, and error
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -10,23 +14,27 @@ const ReceiptUploadButton = () => {
   const [error, setError] = useState(null);
   const fileInput = useRef();
 
+  // Open modal and reset state
   const handleOpen = () => {
     setOpen(true);
     setResult(null);
     setError(null);
     setFile(null);
   };
+  // Close modal and reset state
   const handleClose = () => {
     setOpen(false);
     setFile(null);
     setResult(null);
     setError(null);
   };
+  // Handle file selection
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
     setResult(null);
     setError(null);
   };
+  // Handle file upload to backend
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) return;
@@ -40,6 +48,7 @@ const ReceiptUploadButton = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setResult(res.data);
+      // Notify app that a new transaction was added
       window.dispatchEvent(new Event('transactionAdded'));
     } catch (err) {
       setError(err.response?.data?.message || 'Upload failed');
@@ -50,12 +59,14 @@ const ReceiptUploadButton = () => {
 
   return (
     <>
+      {/* Button to open upload modal */}
       <button className="upload-btn" onClick={handleOpen}>Upload Receipt</button>
       {open && (
         <div className="receipt-modal-overlay" onClick={handleClose}>
           <div className="receipt-modal" onClick={e => e.stopPropagation()}>
             <button className="receipt-modal-close" onClick={handleClose}>&times;</button>
             <h2>Upload Receipt</h2>
+            {/* Upload form */}
             <form onSubmit={handleUpload}>
               <input type="file" accept="image/*,application/pdf" onChange={handleFileChange} />
               <button type="submit" disabled={loading || !file}>

@@ -1,8 +1,12 @@
+// TransactionModal.jsx - Modal for adding or editing a transaction
+// Handles form state, currency conversion, and save/cancel actions
+
 import React, { useState } from 'react';
 
 import './TransactionModal.css';
 import axios from '../utils/axios'; // instead of 'axios'
 
+// Predefined categories and currency options
 const INCOME_CATEGORIES = [
   'Salary',
   'Business',
@@ -37,6 +41,7 @@ const CURRENCY_RATES = {
 };
 
 const TransactionModal = ({ isOpen, onClose, initialData, onSave }) => {
+  // State for form data
   const [formData, setFormData] = useState(initialData || {
     type: 'expense',
     category: '',
@@ -51,6 +56,7 @@ const TransactionModal = ({ isOpen, onClose, initialData, onSave }) => {
     status: 'confirmed',
   });
 
+  // Update form data when editing an existing transaction
   React.useEffect(() => {
     if (initialData) {
       setFormData({

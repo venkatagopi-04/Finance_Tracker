@@ -1,16 +1,20 @@
+// ReceiptUpload.jsx - Page for uploading receipts and viewing receipt-created transactions
+// Allows users to upload a receipt and view all transactions created from receipts
+
 import React, { useState } from 'react';
 import axios from '../utils/axios';
 import ReceiptTransactionsTable from '../components/ReceiptTransactionsTable';
 import './ReceiptUpload.css';
 
 const ReceiptUpload = () => {
+  // State for file upload, loading, result, error, and receipt transactions
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [receiptTransactions, setReceiptTransactions] = useState([]);
 
-  // Fetch all previous receipt-uploaded transactions on mount
+  // Fetch all previous receipt-uploaded transactions on mount and on transactionAdded event
   React.useEffect(() => {
     const fetchReceiptTransactions = async () => {
       try {
@@ -30,6 +34,7 @@ const ReceiptUpload = () => {
     return () => window.removeEventListener('transactionAdded', handler);
   }, []);
 
+  // Handle file input change
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
     setResult(null);
@@ -37,6 +42,7 @@ const ReceiptUpload = () => {
     console.log('File selected:', e.target.files[0]);
   };
 
+  // Handle receipt upload form submit
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) {

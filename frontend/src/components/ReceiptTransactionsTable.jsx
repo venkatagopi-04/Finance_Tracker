@@ -1,9 +1,13 @@
+// ReceiptTransactionsTable.jsx - Table for displaying transactions extracted from receipts
+// Includes filters for category, status, and date, with pagination
+
 import React, { useState, useMemo } from 'react';
 import './TransactionsTable.css';
 
 const PAGE_SIZE = 10;
 
 const ReceiptTransactionsTable = ({ transactions = [] }) => {
+  // State for pagination and filters
   const [page, setPage] = useState(1);
   const [category, setCategory] = useState('');
   const [status, setStatus] = useState('');
@@ -13,7 +17,7 @@ const ReceiptTransactionsTable = ({ transactions = [] }) => {
   const categories = useMemo(() => Array.from(new Set(transactions.map(t => t.category).filter(Boolean))), [transactions]);
   const statuses = useMemo(() => Array.from(new Set(transactions.map(t => t.status).filter(Boolean))), [transactions]);
 
-  // Filtered transactions
+  // Filtered transactions based on selected filters
   const filtered = useMemo(() => {
     return transactions.filter(txn =>
       (!category || txn.category === category) &&
@@ -22,17 +26,19 @@ const ReceiptTransactionsTable = ({ transactions = [] }) => {
     );
   }, [transactions, category, status, date]);
 
-  // Pagination
+  // Pagination logic
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE) || 1;
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   // Reset to first page on filter change
   React.useEffect(() => { setPage(1); }, [category, status, date]);
 
+  // Show message if no transactions
   if (!transactions.length) return <div style={{marginTop: 24}}>No receipt transactions found.</div>;
   return (
     <div className="table-container" style={{marginTop: 24}}>
       <h4>Receipt Transactions</h4>
+      {/* Filter controls */}
       <div style={{ display: 'flex', gap: 12, marginBottom: 12, flexWrap: 'wrap' }}>
         <select value={category} onChange={e => setCategory(e.target.value)}>
           <option value="">All Categories</option>
@@ -44,6 +50,7 @@ const ReceiptTransactionsTable = ({ transactions = [] }) => {
         </select>
         <input type="date" value={date} onChange={e => setDate(e.target.value)} />
       </div>
+      {/* Transactions table */}
       <table>
         <thead>
           <tr>
@@ -68,6 +75,7 @@ const ReceiptTransactionsTable = ({ transactions = [] }) => {
           ))}
         </tbody>
       </table>
+      {/* Pagination controls */}
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 14 }}>
         <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>Prev</button>
         <span style={{ fontWeight: 500 }}>Page {page} of {totalPages}</span>

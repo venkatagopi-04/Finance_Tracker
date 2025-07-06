@@ -1,3 +1,6 @@
+// Dashboard.jsx - Main dashboard page for the finance tracker app
+// Shows summary cards, charts, recent transactions, and provides add/upload actions
+
 import React, { useState, useEffect, useMemo } from 'react';
 import SummaryCards from '../components/SummaryCards';
 import PieChartComponent from '../components/PieChart';
@@ -8,16 +11,17 @@ import ReceiptUploadButton from '../components/ReceiptUploadButton';
 import axios from '../utils/axios';
 import '../styles/Dashboard.css';
 
-
 const Dashboard = ({ setSummary }) => {
+  // State for modal, transactions, loading, error, and currency
   const [showModal, setShowModal] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Currency state and conversion rates
+  // Currency state and conversion rates for summary display
   const [currency, setCurrency] = useState('INR');
   const [conversionRates] = useState({ USD: 83, FRW: 0.021, OTHER: 1 }); // Example rates
 
+  // Fetch all transactions on mount and when a transaction is added/edited/deleted
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -37,7 +41,7 @@ const Dashboard = ({ setSummary }) => {
     return () => window.removeEventListener('transactionAdded', handler);
   }, []);
 
-  // Calculate summary data in INR
+  // Calculate summary data in INR for analytics and chatbot
   const totalIncomeINR = transactions.filter(t => t.amount > 0).reduce((sum, t) => {
     let amt = t.amount;
     if (t.currency && t.currency !== 'INR' && conversionRates[t.currency]) {
@@ -60,7 +64,7 @@ const Dashboard = ({ setSummary }) => {
   const totalExpenses = Math.round(totalExpensesINR * displayRate);
   const balance = Math.round(balanceINR * displayRate);
 
-  // Memoize category breakdowns to avoid unnecessary updates
+  // Memoize category breakdowns for performance
   const expensesByCategory = useMemo(() =>
     transactions.filter(t => t.amount < 0).reduce((acc, t) => {
       acc[t.category] = (acc[t.category] || 0) + Math.abs(t.amount);
@@ -116,6 +120,7 @@ const Dashboard = ({ setSummary }) => {
     observer.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
     return () => observer.disconnect();
   }, []);
+
   // Use CSS variables for background/text color to ensure all children inherit theme
   return (
     <div
@@ -137,6 +142,7 @@ const Dashboard = ({ setSummary }) => {
       }}
     >
       <div style={{width: '100%', maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateRows: 'auto auto 1fr auto', gap: 32}}>
+        {/* Summary cards for income, expenses, and balance */}
         <div style={{marginBottom: 8}}>
           <SummaryCards
             totalIncome={totalIncome}
@@ -147,6 +153,7 @@ const Dashboard = ({ setSummary }) => {
           />
         </div>
 
+        {/* Centered action buttons for adding transactions and uploading receipts */}
         <div className="dashboard-actions" style={{display: 'flex', gap: 16, justifyContent: 'center', alignItems: 'center', margin: '0 0 8px 0', width: '100%'}}>
           <button className="add-btn" onClick={() => setShowModal(true)} style={{
             background: isDark ? 'var(--dashboard-card)' : '#f8b500',
@@ -163,6 +170,7 @@ const Dashboard = ({ setSummary }) => {
           <ReceiptUploadButton />
         </div>
 
+        {/* Charts for expenses by category and by month */}
         <div className="dashboard-charts" style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32, width: '100%', marginBottom: 0}}>
           <div className="chart-box" style={{background: 'var(--dashboard-card)', borderRadius: 16, boxShadow: 'var(--dashboard-shadow)', padding: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 300}}>
             <PieChartComponent data={pieData} />
@@ -172,12 +180,13 @@ const Dashboard = ({ setSummary }) => {
           </div>
         </div>
 
+        {/* Recent transactions table */}
         <div style={{width: '100%', background: 'var(--dashboard-card)', borderRadius: 16, boxShadow: 'var(--dashboard-shadow)', padding: 24, margin: '32px 0 0 0'}}>
           <TransactionsTable transactions={transactions.slice(0, 10)} loading={loading} error={error} />
         </div>
       </div>
 
-      {/* 🔽 Transaction Form Popup */}
+      {/* Transaction Form Popup for adding/editing transactions */}
       <TransactionModal isOpen={showModal} onClose={() => setShowModal(false)} />
     </div>
   );

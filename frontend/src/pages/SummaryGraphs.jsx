@@ -1,3 +1,5 @@
+// SummaryGraphs.jsx - Page for visualizing financial data with charts
+// Shows income/expense trends, category breakdowns, and payment/status distributions
 
 import React, { useEffect, useState } from 'react';
 import axios from '../utils/axios';
@@ -7,10 +9,12 @@ import './SummaryGraphs.css';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#AA66CC', '#FF8042', '#FF6384', '#36A2EB', '#FFCE56'];
 
 const SummaryGraphs = () => {
+  // State for transactions, loading, and error
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch all transactions on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
